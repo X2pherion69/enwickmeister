@@ -1,8 +1,10 @@
 "use client";
 
 import { Box, Typography } from "@mui/material";
-import React, { useCallback, useState } from "react";
-import { CommonStyles } from "../common-styles";
+import React, { useCallback, useEffect, useState } from "react";
+import { CommonStyles } from "../../styles/common-styles";
+import { useInView } from "react-intersection-observer";
+import { useAppCtx } from "@/context";
 
 const buttonsData = [
   { name: "Languages", img: "/Web-skills.png" },
@@ -12,22 +14,45 @@ const buttonsData = [
 
 const { highlightText, container, sideHightlightText } = CommonStyles;
 
+const currentSection = { id: "skills-page", index: 2 };
+
+let timeout: NodeJS.Timeout;
+
 export default function SkillsPage() {
+  const { ref, inView } = useInView();
+  const { selectedSection, setSelectSection } = useAppCtx();
+  useEffect(() => {
+    if (inView || selectedSection === currentSection)
+      timeout = setTimeout(() => setSelectSection(currentSection), 500);
+    return () => clearTimeout(timeout);
+  }, [inView, selectedSection, setSelectSection]);
   const [imgPath, setImgPath] = useState<string>(buttonsData[0].img);
-  const changeImageHandler = useCallback((img: string) => {
-    setImgPath(img);
-  }, []);
+  const [shouldReanimation, setReanimation] = useState(false);
+  const changeImageHandler = useCallback(
+    (img: string) => {
+      if (img === imgPath) return;
+      setReanimation(true);
+      setTimeout(() => {
+        setImgPath(img);
+        setReanimation(false);
+      }, 1500);
+    },
+    [imgPath]
+  );
 
   return (
     <Box
+      id="skills-page"
       sx={{
         ...container,
         flexDirection: "column",
         gap: "80px",
-        p: " 60px 0 0",
+        height: "80vh",
       }}
     >
       <Box
+        ref={ref}
+        className={`hidden-left-to-right ${inView ? "show-horizontal" : ""}`}
         sx={{
           ...container,
           position: "relative",
@@ -55,6 +80,10 @@ export default function SkillsPage() {
         }}
       >
         <Box
+          ref={ref}
+          className={`hidden-left-to-right ${
+            inView && !shouldReanimation ? "show-horizontal" : ""
+          }`}
           component="img"
           src={imgPath}
           alt=""
@@ -62,6 +91,8 @@ export default function SkillsPage() {
         />
 
         <Box
+          ref={ref}
+          className={`hidden-right-to-left ${inView ? "show-horizontal" : ""}`}
           sx={{
             ...container,
             gap: "60px",
@@ -92,10 +123,14 @@ export default function SkillsPage() {
             ))}
           </Box>
           <Box
+            ref={ref}
+            className={`hidden-left-to-right ${
+              inView ? "show-horizontal" : ""
+            }`}
             component="img"
             src="/Skills.png"
             alt=""
-            sx={{ width: "100%", maxWidth: "400px", height: "500px" }}
+            sx={{ width: "100%", maxWidth: "400px", height: "400px" }}
           />
         </Box>
       </Box>

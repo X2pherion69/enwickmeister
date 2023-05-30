@@ -1,9 +1,11 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { Box, Typography } from "@mui/material";
-import ServiceItem from "../service-item";
-import { CommonStyles } from "../common-styles";
+import ServiceItem from "../../components/service-item";
+import { CommonStyles } from "../../styles/common-styles";
+import { useInView } from "react-intersection-observer";
+import { useAppCtx } from "@/context";
 
 const servicesData = [
   {
@@ -25,18 +27,32 @@ const servicesData = [
 
 const { highlightText, container, sideHightlightText } = CommonStyles;
 
+const currentSection = { id: "service-page", index: 1 };
+
+let timeout: NodeJS.Timeout;
+
 export default function ServicePage() {
+  const { ref, inView } = useInView();
+  const { selectedSection, setSelectSection } = useAppCtx();
+  useEffect(() => {
+    if (inView || selectedSection === currentSection)
+      timeout = setTimeout(() => setSelectSection(currentSection), 500);
+    return () => clearTimeout(timeout);
+  }, [inView, selectedSection, setSelectSection]);
   return (
     <Box
+      id="service-page"
       sx={{
         ...container,
         flexDirection: "column",
         alignItems: "center",
-        p: "60px",
         gap: "80px",
+        height: "80vh",
       }}
     >
       <Box
+        ref={ref}
+        className={`hidden-right-to-left ${inView ? "show-horizontal" : ""}`}
         sx={{
           ...container,
           justifyContent: "flex-end",
@@ -54,6 +70,7 @@ export default function ServicePage() {
         </Typography>
       </Box>
       <Box
+        className={`hidden-left-to-right ${inView ? "show-horizontal" : ""}`}
         sx={{
           ...container,
           justifyContent: "space-around",
@@ -69,10 +86,16 @@ export default function ServicePage() {
         ))}
       </Box>
       <Box
+        className={`hidden-top-to-bottom ${inView ? "show-vertical" : ""}`}
         component="img"
         alt=""
         src="/CryingWallpaper.png"
-        sx={{ width: "100%", height: 240, maxWidth: 1440 }}
+        sx={{
+          width: "100%",
+          height: 240,
+          maxWidth: 1440,
+          transition: "all 2s",
+        }}
       />
     </Box>
   );

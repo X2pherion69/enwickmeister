@@ -1,6 +1,7 @@
 "use client";
 
-import Header from "@/app/Header";
+import { AppContext } from "@/context";
+import Header from "./Header";
 import "./globals.css";
 
 export const metadata = {
@@ -14,11 +15,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body style={{ padding: "0 40px" }}>
-        <Header />
-        {children}
-      </body>
-    </html>
+    <AppContext>
+      <html lang="en">
+        <body style={{ padding: "0 40px", position: "relative" }}>
+          <Header />
+          {children}
+        </body>
+      </html>
+    </AppContext>
   );
 }
