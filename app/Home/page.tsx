@@ -1,3 +1,5 @@
+"use client";
+
 import { useAppCtx } from "@/context";
 import { Box, Typography } from "@mui/material";
 import { useEffect } from "react";
