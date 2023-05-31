@@ -3,6 +3,10 @@ import { Box, Button, Typography } from "@mui/material";
 import React from "react";
 
 const Header = () => {
+  const element = document.getElementById("contact-page");
+  const handleClick = () => {
+    if (element) element?.scrollIntoView({ behavior: "smooth", block: "end" });
+  };
   return (
     <Box
       sx={{
@@ -22,7 +26,19 @@ const Header = () => {
         sx={{ width: "100%", height: 16, maxWidth: 120 }}
       />
       <Typography>Now available for work!</Typography>
-      <Button variant="contained">Contact Us</Button>
+      <Button
+        variant="contained"
+        sx={{
+          background: "#568F63",
+          ":hover": {
+            color: "yellow",
+            background: "#568F63",
+          },
+        }}
+        onClick={handleClick}
+      >
+        Contact Us
+      </Button>
     </Box>
   );
 };

@@ -7,7 +7,7 @@ import { useInView } from "react-intersection-observer";
 import { useAppCtx } from "@/context";
 
 const buttonsData = [
-  { name: "Languages", img: "/Web-skills.png" },
+  { name: "Languages", img: "/Languages.png" },
   { name: "Website", img: "/Web-skills.png" },
   { name: "Data", img: "/Data-skills.png" },
 ];
@@ -21,13 +21,10 @@ let timeout: NodeJS.Timeout;
 export default function SkillsPage() {
   const { ref, inView } = useInView();
   const { selectedSection, setSelectSection } = useAppCtx();
-  useEffect(() => {
-    if (inView || selectedSection === currentSection)
-      timeout = setTimeout(() => setSelectSection(currentSection), 500);
-    return () => clearTimeout(timeout);
-  }, [inView, selectedSection, setSelectSection]);
+
   const [imgPath, setImgPath] = useState<string>(buttonsData[0].img);
   const [shouldReanimation, setReanimation] = useState(false);
+
   const changeImageHandler = useCallback(
     (img: string) => {
       if (img === imgPath) return;
@@ -39,6 +36,12 @@ export default function SkillsPage() {
     },
     [imgPath]
   );
+
+  useEffect(() => {
+    if (inView || selectedSection === currentSection)
+      timeout = setTimeout(() => setSelectSection(currentSection), 750);
+    return () => clearTimeout(timeout);
+  }, [inView, selectedSection, setSelectSection]);
 
   return (
     <Box

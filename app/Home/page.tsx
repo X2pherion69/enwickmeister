@@ -53,7 +53,7 @@ export default function HomePage() {
         className={`hidden-right-to-left ${inView ? "show-horizontal" : ""}`}
         component="img"
         alt=""
-        src="/landingpage.png"
+        src="/Home.png"
         sx={{ width: "100%", height: 360, maxWidth: 1440 }}
       />
     </Box>
